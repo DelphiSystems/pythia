@@ -17,9 +17,6 @@ contract StaticOracle {
     event Execution(uint indexed txid);
     event ExecutionFailure(uint indexed txid);
     event Deposit(address indexed sender, uint value);
-    event OracleAddition(address indexed oracle);
-    event OracleRemoval(address indexed oracle);
-    event ThresholdChange(uint _threshold);
 
     struct Transaction {
         address destination;
