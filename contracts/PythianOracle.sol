@@ -1,4 +1,4 @@
-pragma solidity 0.4.15;
+pragma solidity ^0.4.15;
 
 contract PythianOracle {
     uint constant public MAX_ORACLE_COUNT = 50;
