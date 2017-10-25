@@ -78,6 +78,8 @@ contract StaticOracle {
     function StaticOracle(address[] _oracles, uint[] _weights, uint _threshold)
         public
     {
+        assert(_oracles.length > 0);
+        assert(_oracles.length <= MAX_ORACLE_COUNT);
         assert(_oracles.length == _weights.length);
         for (uint i=0; i<_oracles.length; i++) {
             if (isOracle[_oracles[i]] || _oracles[i] == 0)
