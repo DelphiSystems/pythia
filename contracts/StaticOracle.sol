@@ -1,7 +1,22 @@
 pragma solidity ^0.4.15;
 
+/*************************************************************************\
+ *   Pythia: Weighted multisignature oracle contract
+ *
+ *   Oracle account controlled via weighted multisignature transaction
+ *   proposals. Each oracle is assigned a weight value, and proposed
+ *   transactions are only authorized and executable once they have
+ *   reached a certain weight threshold.
+ *
+ *   Static Oracle: once oracles and weights are initially established,
+ *   they are "set in stone" and cannot be updated.
+ *
+\*************************************************************************/
 contract StaticOracle {
-    uint constant public MAX_ORACLE_COUNT = 50;
+    /*************\
+     *  Storage  *
+    \*************/
+    uint constant public MAX_ORACLES = 31;                              // Upper bound on loop length
 
     mapping (uint => Transaction) public transactions;
     mapping (uint => mapping (address => bool)) public supporters;
@@ -11,6 +26,9 @@ contract StaticOracle {
     uint public threshold;
     uint public txCount;
 
+    /************\
+     *  Events  *
+    \************/
     event Proposal(uint indexed txid);
     event Support(address indexed sender, uint indexed txid);
     event Revocation(address indexed sender, uint indexed txid);
@@ -79,7 +97,7 @@ contract StaticOracle {
         public
     {
         assert(_oracles.length > 0);
-        assert(_oracles.length <= MAX_ORACLE_COUNT);
+        assert(_oracles.length <= MAX_ORACLES);
         assert(_oracles.length == _weights.length);
         for (uint i=0; i<_oracles.length; i++) {
             if (isOracle[_oracles[i]] || _oracles[i] == 0)

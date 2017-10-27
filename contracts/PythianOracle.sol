@@ -1,7 +1,23 @@
 pragma solidity ^0.4.15;
 
+/*************************************************************************\
+ *   Pythia: Weighted multisignature oracle contract
+ *
+ *   Oracle account controlled via weighted multisignature transaction
+ *   proposals. Each oracle is assigned a weight value, and proposed
+ *   transactions are only authorized and executable once they have
+ *   reached a certain weight threshold.
+ *
+ *   Standard Pythian Oracle: after oracles and weights are initially
+ *   established, they can be updated if a sufficient oracle weight
+ *   invokes the update (i.e. if the contract successfully calls itself)
+ *
+\*************************************************************************/
 contract PythianOracle {
-    uint constant public MAX_ORACLE_COUNT = 50;
+    /*************\
+     *  Storage  *
+    \*************/
+    uint constant public MAX_ORACLES = 31;                              // Upper bound on loop length
 
     mapping (uint => Transaction) public transactions;
     mapping (uint => mapping (address => bool)) public supporters;
@@ -11,6 +27,9 @@ contract PythianOracle {
     uint public threshold;
     uint public txCount;
 
+    /************\
+     *  Events  *
+    \************/
     event Proposal(uint indexed txid);
     event Support(address indexed sender, uint indexed txid);
     event Revocation(address indexed sender, uint indexed txid);
@@ -94,7 +113,7 @@ contract PythianOracle {
         public
     {
         assert(_oracles.length > 0);
-        assert(_oracles.length <= MAX_ORACLE_COUNT);
+        assert(_oracles.length <= MAX_ORACLES);
         assert(_oracles.length == _weights.length);
         for (uint i=0; i<_oracles.length; i++) {
             if (isOracle[_oracles[i]] || _oracles[i] == 0)
@@ -113,7 +132,7 @@ contract PythianOracle {
         noSuchOracle(oracle)
         notNull(oracle)
     {
-        assert(oracles.length < MAX_ORACLE_COUNT);
+        assert(oracles.length < MAX_ORACLES);
         isOracle[oracle] = true;
         oracles.push(oracle);
         weights.push(weight);
