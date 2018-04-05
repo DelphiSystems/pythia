@@ -459,7 +459,7 @@ contract StaticOracle {
      *  @dev sum function (helper function for threshold checks)
      *  Returns the sum of the elements of an array of uints.
     \*************************************************************/
-    function sum(uint[] self) private returns (uint s) {
+    function sum(uint[] self) private pure returns (uint s) {
         for (uint i = 0; i < self.length; i++) {
             s += self[i];
         }
@@ -468,7 +468,7 @@ contract StaticOracle {
     /****************************************************\
      *  @dev Ensure that a new weight threshold is sane
     \****************************************************/
-    function checkThreshold(uint _threshold) private {
+    function checkThreshold(uint _threshold) private view {
         if (_threshold > sum(weights) || _threshold == 0 || sum(weights) == 0) {
             revert();
         }
