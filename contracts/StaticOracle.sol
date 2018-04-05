@@ -127,8 +127,8 @@ contract StaticOracle {
     {
         // Only accept nonzero deposits
         if (msg.value > 0) {
-            // Fire Deposit event
-            Deposit(msg.sender, msg.value);
+            // Emit Deposit event
+            emit Deposit(msg.sender, msg.value);
         }
     }
 
@@ -161,8 +161,8 @@ contract StaticOracle {
     {
         // Log support
         supporters[txid][msg.sender] = true;
-        // Fire Support event
-        Support(msg.sender, txid);
+        // Emit Support event
+        emit Support(msg.sender, txid);
         // Attempt to execute, just in case threshold was passed
         executeTransaction(txid);
     }
@@ -180,8 +180,8 @@ contract StaticOracle {
     {
         // Log the removal of support
         supporters[txid][msg.sender] = false;
-        // Fire Revocation event
-        Revocation(msg.sender, txid);
+        // Emit Revocation event
+        emit Revocation(msg.sender, txid);
     }
 
     /***************************************************************\
@@ -203,11 +203,11 @@ contract StaticOracle {
             executedTransaction.executed = true;
             // Attempt the transaction call
             if (executedTransaction.destination.call.value(executedTransaction.value)(executedTransaction.data)) {
-                // Fire ExecutionFailure event
-                Execution(txid);
+                // Emit ExecutionFailure event
+                emit Execution(txid);
             } else {
-                // Fire ExecutionFailure event
-                ExecutionFailure(txid);
+                // Emit ExecutionFailure event
+                emit ExecutionFailure(txid);
                 // Mark transaction as un-executed (call failed)
                 executedTransaction.executed = false;
             }
@@ -234,11 +234,11 @@ contract StaticOracle {
             executedTransaction.executed = true;
             // Attempt the transaction call (pass specificGas value)
             if (executedTransaction.destination.call.value(executedTransaction.value).gas(specificGas)(executedTransaction.data)) {
-                // Fire ExecutionFailure event
-                Execution(txid);
+                // Emit ExecutionFailure event
+                emit Execution(txid);
             } else {
-                // Fire ExecutionFailure event
-                ExecutionFailure(txid);
+                // Emit ExecutionFailure event
+                emit ExecutionFailure(txid);
                 // Mark transaction as un-executed (call failed)
                 executedTransaction.executed = false;
             }
@@ -291,8 +291,8 @@ contract StaticOracle {
         });
         // Update transaction count index
         txCount += 1;
-        // Fire Proposal event
-        Proposal(txid);
+        // Emit Proposal event
+        emit Proposal(txid);
     }
 
     /************************\

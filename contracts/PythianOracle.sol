@@ -142,8 +142,8 @@ contract PythianOracle {
     {
         // Only accept nonzero deposits
         if (msg.value > 0) {
-            // Fire Deposit event
-            Deposit(msg.sender, msg.value);
+            // Emit Deposit event
+            emit Deposit(msg.sender, msg.value);
         }
     }
 
@@ -176,8 +176,8 @@ contract PythianOracle {
     {
         // Log support
         supporters[txid][msg.sender] = true;
-        // Fire Support event
-        Support(msg.sender, txid);
+        // Emit Support event
+        emit Support(msg.sender, txid);
         // Attempt to execute, just in case threshold was passed
         executeTransaction(txid);
     }
@@ -195,8 +195,8 @@ contract PythianOracle {
     {
         // Log the removal of support
         supporters[txid][msg.sender] = false;
-        // Fire Revocation event
-        Revocation(msg.sender, txid);
+        // Emit Revocation event
+        emit Revocation(msg.sender, txid);
     }
 
     /***************************************************************\
@@ -218,11 +218,11 @@ contract PythianOracle {
             executedTransaction.executed = true;
             // Attempt the transaction call
             if (executedTransaction.destination.call.value(executedTransaction.value)(executedTransaction.data)) {
-                // Fire ExecutionFailure event
-                Execution(txid);
+                // Emit ExecutionFailure event
+                emit Execution(txid);
             } else {
-                // Fire ExecutionFailure event
-                ExecutionFailure(txid);
+                // Emit ExecutionFailure event
+                emit ExecutionFailure(txid);
                 // Mark transaction as un-executed (call failed)
                 executedTransaction.executed = false;
             }
@@ -249,11 +249,11 @@ contract PythianOracle {
             executedTransaction.executed = true;
             // Attempt the transaction call (pass specificGas value)
             if (executedTransaction.destination.call.value(executedTransaction.value).gas(specificGas)(executedTransaction.data)) {
-                // Fire ExecutionFailure event
-                Execution(txid);
+                // Emit ExecutionFailure event
+                emit Execution(txid);
             } else {
-                // Fire ExecutionFailure event
-                ExecutionFailure(txid);
+                // Emit ExecutionFailure event
+                emit ExecutionFailure(txid);
                 // Mark transaction as un-executed (call failed)
                 executedTransaction.executed = false;
             }
@@ -306,8 +306,8 @@ contract PythianOracle {
         });
         // Update transaction count index
         txCount += 1;
-        // Fire Proposal event
-        Proposal(txid);
+        // Emit Proposal event
+        emit Proposal(txid);
     }
 
     /******************************\
@@ -332,7 +332,8 @@ contract PythianOracle {
         checkThreshold(newThreshold);
         assert(oracles.length == weights.length);
 
-        OracleAddition(oracle);
+        // Emit OracleAddition event
+        emit OracleAddition(oracle);
     }
 
     /*****************************************************\
@@ -365,8 +366,8 @@ contract PythianOracle {
         assert(oracles.length == weights.length);
         assert(oracles.length > 0);
 
-        // Fire OracleRemoval event
-        OracleRemoval(oracle);
+        // Emit OracleRemoval event
+        emit OracleRemoval(oracle);
     }
 
     /*****************************************************\
@@ -392,10 +393,10 @@ contract PythianOracle {
         isOracle[newOracle] = true;
         // Sanity check
         assert(oracles.length == weights.length);
-        // Fire OracleRemoval event
-        OracleRemoval(oracle);
-        // Fire OracleAddition event
-        OracleAddition(newOracle);
+        // Emit OracleRemoval event
+        emit OracleRemoval(oracle);
+        // Emit OracleAddition event
+        emit OracleAddition(newOracle);
     }
 
     /******************************************\
@@ -411,8 +412,8 @@ contract PythianOracle {
         checkThreshold(_threshold);
         // Set new weight threshold
         threshold = _threshold;
-        // Fire ThresholdChange event
-        ThresholdChange(_threshold);
+        // Emit ThresholdChange event
+        emit ThresholdChange(_threshold);
     }
 
     /************************\
